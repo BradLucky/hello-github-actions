@@ -1,5 +1,5 @@
 name: Static Code Analysis
-on: push
+on: pull_request
 
 jobs:
   changed-files:
@@ -16,7 +16,7 @@ jobs:
       - name: Get changed files
         id: changes
         run: |
-          echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.base_ref }} ${{ github.sha }} | xargs)"
+          echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | xargs)"
           echo "::set-output name=py::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep .py$ | xargs)"
 
 
