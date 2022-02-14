@@ -39,7 +39,8 @@ jobs:
       uses: tj-actions/changed-files@v14.6
       with:
         files: |
-          **.py
+          **/*.py
+          !.**
           !flask_af30/client_config
 
     - name: Output results
