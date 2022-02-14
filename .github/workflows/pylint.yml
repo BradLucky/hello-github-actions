@@ -3,6 +3,7 @@ on: pull_request
 
 jobs:
   changed-files:
+    name: get changed files
     runs-on: ubuntu-latest
     outputs:
       all: ${{ steps.changes.outputs.all }}
@@ -19,7 +20,6 @@ jobs:
           echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | xargs)"
           echo "::set-output name=py::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep .py$ | xargs)"
 
-
   python:
     runs-on: ubuntu-latest
     needs: changed-files
@@ -31,6 +31,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -50,4 +52,4 @@ jobs:
 
     - name: Run linter
       run: |
-        pylint --exit-zero ${{ needs.changed-files.outputs.py }}
+        pylint --exit-zero --output-format=colorized ${{ needs.changed-files.outputs.py }}
