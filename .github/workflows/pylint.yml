@@ -50,5 +50,4 @@ jobs:
 
     - name: Run linter
       run: |
-        echo ${{ needs.changed-files.outputs.py }}
-        pylint --exit-zero ${{ needs.changed-files.outputs.py }} .
+        pylint --exit-zero ${{ needs.changed-files.outputs.py }}
