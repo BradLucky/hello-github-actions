@@ -47,26 +47,26 @@ jobs:
         echo ${{ steps.changed-python-files.outputs.all_changed_and_modified_files }}
 
     - name: Set up Python ${{ matrix.python-version }}
-      if: steps.changed-python-files.outputs.all_changed_and_modified_files == ''
+      if: steps.changed-python-files.outputs.all_changed_and_modified_files != ''
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
     - name: Cache dependencies
-      if: steps.changed-python-files.outputs.all_changed_and_modified_files == ''
+      if: steps.changed-python-files.outputs.all_changed_and_modified_files != ''
       uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
         key: ${{ env.pythonLocation }}-pip-
 
     - name: Install dependencies
-      if: steps.changed-python-files.outputs.all_changed_and_modified_files == ''
+      if: steps.changed-python-files.outputs.all_changed_and_modified_files != ''
       run: |
         python -m pip install --upgrade pip
         pip install pylint
 
     - name: Run linter
-      if: steps.changed-python-files.outputs.all_changed_and_modified_files == ''
+      if: steps.changed-python-files.outputs.all_changed_and_modified_files != ''
       run: |
         # pylint --exit-zero --output-format=colorized ${{ needs.changed-files.outputs.py }}
         pylint --exit-zero --output-format=colorized ${{ steps.changed-python-files.outputs.all_changed_and_modified_files }}
