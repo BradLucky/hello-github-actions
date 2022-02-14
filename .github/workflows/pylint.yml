@@ -42,6 +42,11 @@ jobs:
           *.py
           !flask_af30/client_config
 
+    - name: Output results
+      run: |
+        echo ${{ steps.changed-python-files.outputs.any_changed }}
+        echo ${{ steps.changed-python-files.outputs.all_changed_and_modified_files }}
+
     - name: Set up Python ${{ matrix.python-version }}
       if: steps.changed-python-files.outputs.any_changed == 'true'
       uses: actions/setup-python@v2
