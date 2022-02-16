@@ -9,13 +9,13 @@ jobs:
       matrix:
         python-version: ["3.9"]
 
-    external-library-setup:
-      uses: ./.github/workflows/init-static-check-library.yml@main
-      with:
-        python-version: ${{ matrix.python-version }}
-        library: "bandit"
-
     steps:
+      - name: Setup Bandit
+        uses: ./.github/workflows/init-static-check-library.yml@main
+        with:
+          python-version: ${{ matrix.python-version }}
+          library: "bandit"
+
       - name: Python Static Security Scan
         id: python-static-security-scan
         run: |
@@ -36,13 +36,13 @@ jobs:
       matrix:
         python-version: ["3.9"]
 
-    external-library-setup:
-      uses: ./.github/workflows/init-static-check-library.yml@main
-      with:
-        python-version: ${{ matrix.python-version }}
-        library: "safety==1.10.3"
-
     steps:
+      - name: Setup Safety
+        uses: ./.github/workflows/init-static-check-library.yml@main
+        with:
+          python-version: ${{ matrix.python-version }}
+          library: "safety==1.10.3"
+
       - name: Safety Check
         id: python-safety-check
         run: |
