@@ -4,24 +4,13 @@ name: Run Security Scans
 jobs:
   pip-setup:
     uses: ./.github/workflows/init-static-check-library.yml
-    with:
-      python-version: "3.9"
 
   bandit:
     name: Bandit
     runs-on: ubuntu-latest
-    # needs: pip-setup
-    strategy:
-      matrix:
-        python-version: ["3.9"]
+    needs: pip-setup
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-
       - name: Install bandit
         run: pip install bandit
 
@@ -42,9 +31,6 @@ jobs:
     name: Safety
     runs-on: ubuntu-latest
     needs: pip-setup
-    strategy:
-      matrix:
-        python-version: ["3.9"]
 
     steps:
       - name: Install safety
