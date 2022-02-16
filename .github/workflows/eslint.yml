@@ -31,4 +31,4 @@ jobs:
 
     - name: Run linter
       if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
-      run: eslint ${{ steps.changed-js-files.outputs.all_changed_and_modified_files }}
+      run: yarn eslint ${{ steps.changed-js-files.outputs.all_changed_and_modified_files }}
