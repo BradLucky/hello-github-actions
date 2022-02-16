@@ -1,0 +1,9 @@
+{
+  "description": "Tester Testee",
+  "author": "BradLucky",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "jquery": "3.6.0"
+  }
+}
+
