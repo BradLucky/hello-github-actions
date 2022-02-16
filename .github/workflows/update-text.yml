@@ -5,37 +5,40 @@ jobs:
   create-file:
     runs-on: ubuntu-latest
     steps:
-      ## Create check run
-      #- uses: octokit/request-action@v2.x
-      #  id: create_check_run
-      #  with:
-      #    route: POST /repos/{owner}/{repo}/check-runs
-      #    owner: BradLucky
-      #    repo: hello-github-actions
-      #    name: "Test check run"
-      #    head_sha: ${{ github.sha }}
-      #    output: | # The | is significant!
-      #      title: Test check run title
-      #      summary: A summary of the test check run
-      #      images:
-      #        - alt: Test image
-      #          image_url: https://octodex.github.com/images/jetpacktocat.png
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Create check run
+      - uses: octokit/request-action@v2.x
+        id: create_check_run
+        with:
+          route: POST /repos/{owner}/{repo}/check-runs
+          owner: BradLucky
+          repo: hello-github-actions
+          name: "Test check run"
+          head_sha: ${{ github.sha }}
+          output: | # The | is significant!
+            title: Test check run title
+            summary: A summary of the test check run
+            images:
+              - alt: Test image
+                image_url: https://octodex.github.com/images/jetpacktocat.png
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      ## Update check run to completed, successful status
-      #- uses: octokit/request-action@v2.x
-      #  id: update_check_run
-      #  with:
-      #    route: PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}
-      #    owner: BradLucky
-      #    repo: hello-github-actions
-      #    check_run_id: ${{ fromJson(steps.create_check_run.outputs.data).id }}
-      #    conclusion: "success"
-      #    status: "completed"
-      #  env:
-      #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Update check run to completed, successful status
+      - uses: octokit/request-action@v2.x
+        id: update_check_run
+        with:
+          route: PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}
+          owner: BradLucky
+          repo: hello-github-actions
+          check_run_id: ${{ fromJson(steps.create_check_run.outputs.data).id }}
+          conclusion: "success"
+          status: "completed"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  get-check-runs:
+    runs-on: ubuntu-latest
+    steps:
       # Get all check runs
       - uses: octokit/request-action@v2.x
         id: get_check_runs
@@ -47,4 +50,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: "echo latest release: ${{ steps.get_check_runs.outputs.data }}"
+      - run: "echo: ${{ steps.get_check_runs.outputs.data }}"
