@@ -17,6 +17,8 @@ jobs:
       - name: Python Static Security Scan
         id: python-static-security-scan
         run: |
+          echo python --version
+          echo python3 --version
           bandit *.py -lll || :
           rc=0
           banditoutput=$(bandit *.py -lll || rc=1) ; echo "$banditoutput" > python-bandit-results
@@ -39,6 +41,8 @@ jobs:
       - name: Safety Check
         id: python-safety-check
         run: |
+          echo python --version
+          echo python3 --version
           safety check -r requirements.txt || :
           rc=0
           safetyoutput=$(safety check -r requirements.txt || :) ; echo "$safetyoutput" > python-safety-results
