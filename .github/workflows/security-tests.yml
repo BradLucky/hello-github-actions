@@ -2,6 +2,12 @@ on: pull_request
 name: Run Security Scans
 
 jobs:
+  bandit-setup:
+    uses: ./.github/workflows/init-static-check-library.yml@main
+    with:
+      python-version: ${{ matrix.python-version }}
+      library: "bandit"
+
   bandit:
     name: Bandit
     runs-on: ubuntu-latest
@@ -10,12 +16,6 @@ jobs:
         python-version: ["3.9"]
 
     steps:
-      - name: Setup Bandit
-        uses: ./.github/workflows/init-static-check-library.yml@main
-        with:
-          python-version: ${{ matrix.python-version }}
-          library: "bandit"
-
       - name: Python Static Security Scan
         id: python-static-security-scan
         run: |
@@ -29,6 +29,12 @@ jobs:
           name: bandit-log
           path: python-bandit-results
 
+  safety-setup:
+    uses: ./.github/workflows/init-static-check-library.yml@main
+    with:
+      python-version: ${{ matrix.python-version }}
+      library: "safety==1.10.3"
+
   safety:
     name: Safety
     runs-on: ubuntu-latest
@@ -37,12 +43,6 @@ jobs:
         python-version: ["3.9"]
 
     steps:
-      - name: Setup Safety
-        uses: ./.github/workflows/init-static-check-library.yml@main
-        with:
-          python-version: ${{ matrix.python-version }}
-          library: "safety==1.10.3"
-
       - name: Safety Check
         id: python-safety-check
         run: |
