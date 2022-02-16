@@ -3,9 +3,9 @@ name: Run Security Scans
 
 jobs:
   bandit-setup:
-    uses: ./.github/workflows/init-static-check-library.yml@main
+    uses: ./.github/workflows/init-static-check-library.yml
     with:
-      python-version: ${{ matrix.python-version }}
+      python-version: "3.9"
       library: "bandit"
 
   bandit:
@@ -30,9 +30,9 @@ jobs:
           path: python-bandit-results
 
   safety-setup:
-    uses: ./.github/workflows/init-static-check-library.yml@main
+    uses: ./.github/workflows/init-static-check-library.yml
     with:
-      python-version: ${{ matrix.python-version }}
+      python-version: "3.9"
       library: "safety==1.10.3"
 
   safety:
