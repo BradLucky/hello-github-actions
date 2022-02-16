@@ -34,7 +34,7 @@ jobs:
         run: |
           bandit *.py -lll || :
           rc=0
-          banditoutput=$(python3 ~/.local/bin/bandit *.py -lll || rc=1) ; echo "$banditoutput" > python-bandit-results
+          banditoutput=$(bandit *.py -lll || rc=1) ; echo "$banditoutput" > python-bandit-results
 
       - name: Store Bandit artifact
         uses: actions/upload-artifact@v2
@@ -74,7 +74,7 @@ jobs:
         run: |
           safety check -r requirements.txt || :
           rc=0
-          safetyoutput=$(python3 ~/.local/bin/safety check -r requirements.txt || :) ; echo "$safetyoutput" > python-safety-results
+          safetyoutput=$(safety check -r requirements.txt || :) ; echo "$safetyoutput" > python-safety-results
 
       - name: Store Safety artifact
         uses: actions/upload-artifact@v2
