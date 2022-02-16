@@ -1,5 +1,5 @@
 on: pull_request
-name: Run Security Scans
+name: Python Security Scan
 
 jobs:
   bandit:
@@ -22,13 +22,13 @@ jobs:
           path: ${{ env.pythonLocation }}
           key: ${{ env.pythonLocation }}-pip-bandit
 
-      - name: Install bandit
+      - name: Install Bandit
         if: steps.pip-cache.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
           pip install bandit==1.7.2
 
-      - name: Python Static Security Scan
+      - name: Run Bandit
         id: python-static-security-scan
         run: |
           bandit *.py --severity-level high || :
@@ -61,13 +61,13 @@ jobs:
           path: ${{ env.pythonLocation }}
           key: ${{ env.pythonLocation }}-pip-safety
 
-      - name: Install safety
+      - name: Install Safety
         if: steps.pip-cache.outputs.cache-hit != 'true'
         run: |
           python -m pip install --upgrade pip
           pip install safety==1.10.3
 
-      - name: Safety Check
+      - name: Run Safety Check
         id: python-safety-check
         run: |
           safety check -r requirements.txt || :
