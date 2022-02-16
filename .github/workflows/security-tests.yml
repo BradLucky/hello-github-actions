@@ -14,11 +14,14 @@ jobs:
       - name: Install bandit
         run: pip install bandit
 
-      - name: Python Static Security Scan
-        id: python-static-security-scan
+      - name: Print Python version
         run: |
           echo python --version
           echo python3 --version
+
+      - name: Python Static Security Scan
+        id: python-static-security-scan
+        run: |
           bandit *.py -lll || :
           rc=0
           banditoutput=$(bandit *.py -lll || rc=1) ; echo "$banditoutput" > python-bandit-results
@@ -38,11 +41,14 @@ jobs:
       - name: Install safety
         run: pip install safety==1.10.3
 
-      - name: Safety Check
-        id: python-safety-check
+      - name: Print Python version
         run: |
           echo python --version
           echo python3 --version
+
+      - name: Safety Check
+        id: python-safety-check
+        run: |
           safety check -r requirements.txt || :
           rc=0
           safetyoutput=$(safety check -r requirements.txt || :) ; echo "$safetyoutput" > python-safety-results
