@@ -42,15 +42,15 @@ jobs:
       - name: Python Static Security Scan
         id: python-static-security-scan
         run: |
-          bandit *.py -lll || :
+          bandit *.py --severity-level high || :
           rc=0
-          banditoutput=$(bandit *.py -lll || rc=1) ; echo "$banditoutput" > python-bandit-results
+          banditoutput=$(bandit *.py --severity-level high || rc=1) ; echo "$banditoutput" > python-bandit-results.txt
 
       - name: Store Bandit artifact
         uses: actions/upload-artifact@v2
         with:
           name: bandit-log
-          path: python-bandit-results
+          path: python-bandit-results.txt
 
   safety:
     name: Safety
@@ -92,11 +92,11 @@ jobs:
         run: |
           safety check -r requirements.txt || :
           rc=0
-          safetyoutput=$(safety check -r requirements.txt || :) ; echo "$safetyoutput" > python-safety-results
+          safetyoutput=$(safety check -r requirements.txt || :) ; echo "$safetyoutput" > python-safety-results.txt
 
       - name: Store Safety artifact
         uses: actions/upload-artifact@v2
         with:
           name: safety-log
-          path: python-safety-results
+          path: python-safety-results.txt
 
