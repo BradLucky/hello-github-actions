@@ -1,0 +1,40 @@
+on: pull_request
+name: Static Code Analysis
+
+jobs:
+  python:
+    name: ESLint
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Get changed files
+      id: changed-js-files
+      uses: tj-actions/changed-files@v14.6
+      with:
+        files: |
+          !.**
+          **/*.js
+          **/*.jsx
+          **/*.ts
+          **/*.tsx
+
+    - name: Env
+      run: env
+
+      #    - name: Cache dependencies
+      #      if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
+      #      uses: actions/cache@v2
+      #      with:
+      #        path: ${{ env.pythonLocation }}
+      #        key: ${{ env.pythonLocation }}-yarn
+      #
+      #    - name: Install dependencies
+      #      if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
+      #      run: yarn
+      #
+      #    - name: Run linter
+      #      if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
+      #      run: eslint ${{ steps.changed-js-files.outputs.all_changed_and_modified_files }}
