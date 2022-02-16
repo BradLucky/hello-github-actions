@@ -9,26 +9,13 @@ jobs:
       matrix:
         python-version: ["3.9"]
 
+    external-library-setup:
+      uses: ./.github/workflows/init-static-check-library.yml@main
+      with:
+        python-version: ${{ matrix.python-version }}
+        library: "bandit"
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ env.pythonLocation }}-pip-
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install bandit
-
       - name: Python Static Security Scan
         id: python-static-security-scan
         run: |
@@ -49,26 +36,13 @@ jobs:
       matrix:
         python-version: ["3.9"]
 
+    external-library-setup:
+      uses: ./.github/workflows/init-static-check-library.yml@main
+      with:
+        python-version: ${{ matrix.python-version }}
+        library: "safety==1.10.3"
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Cache dependencies
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ env.pythonLocation }}-pip-
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install safety==1.10.3
-
       - name: Safety Check
         id: python-safety-check
         run: |
