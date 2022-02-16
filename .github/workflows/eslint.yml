@@ -21,20 +21,17 @@ jobs:
           **/*.ts
           **/*.tsx
 
-    - name: Env
-      run: env
+    - name: Cache dependencies
+      if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
+      uses: actions/cache@v2
+      with:
+        path: '**/node_modules'
+        key: ${{ runner.os }}-modules-${{ hashFiles('**/package-lock.json') }}
 
-      #    - name: Cache dependencies
-      #      if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
-      #      uses: actions/cache@v2
-      #      with:
-      #        path: ${{ env.pythonLocation }}
-      #        key: ${{ env.pythonLocation }}-yarn
-      #
-      #    - name: Install dependencies
-      #      if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
-      #      run: yarn
-      #
-      #    - name: Run linter
-      #      if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
-      #      run: eslint ${{ steps.changed-js-files.outputs.all_changed_and_modified_files }}
+    - name: Install dependencies
+      if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
+      run: yarn
+
+    - name: Run linter
+      if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''
+      run: eslint ${{ steps.changed-js-files.outputs.all_changed_and_modified_files }}
