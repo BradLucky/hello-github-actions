@@ -23,14 +23,16 @@ jobs:
         id: pip-cache
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ env.pythonLocation }}-pip-
+          key: ${{ env.pythonLocation }}-pip-bandit
 
       - name: Install pip
         if: steps.pip-cache.outputs.cache-hit != 'true'
-        run: python -m pip install --upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit
 
-      - name: Install bandit
-        run: pip install bandit
+          # - name: Install bandit
+          #   run: pip install bandit
 
       - name: Print Python version
         run: |
