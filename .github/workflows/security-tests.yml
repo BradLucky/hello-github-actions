@@ -24,12 +24,15 @@ jobs:
           path: ${{ env.pythonLocation }}
           key: ${{ env.pythonLocation }}-pip-
 
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit
+
       - name: Python Static Security Scan
         id: python-static-security-scan
         run: |
-          python -m pip install --upgrade pip || :
-          pip install --user bandit || :
-          python ~/.local/bin/bandit *.py -lll || :
+          bandit *.py -lll || :
           rc=0
           banditoutput=$(python3 ~/.local/bin/bandit *.py -lll || rc=1) ; echo "$banditoutput" > python-bandit-results
 
@@ -61,17 +64,15 @@ jobs:
           path: ${{ env.pythonLocation }}
           key: ${{ env.pythonLocation }}-pip-
 
-          # - name: Install dependencies
-          #   run: |
-          #     python -m pip install --upgrade pip
-          #     pip3 install safety==1.10.3
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install safety==1.10.3
 
       - name: Safety Check
         id: python-safety-check
         run: |
-          python -m pip install --upgrade pip || :
-          pip install --user safety==1.10.3 || :
-          python ~/.local/bin/safety check -r requirements.txt || :
+          safety check -r requirements.txt || :
           rc=0
           safetyoutput=$(python3 ~/.local/bin/safety check -r requirements.txt || :) ; echo "$safetyoutput" > python-safety-results
 
