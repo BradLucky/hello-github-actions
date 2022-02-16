@@ -1,13 +1,14 @@
 name: Setup static library
 
-on: workflow_call
-  inputs:
-    python-version:
-      required: true
-      type: string
-    library:
-      required: true
-      type: string
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: true
+        type: string
+      library:
+        required: true
+        type: string
 
 jobs:
   library-setup:
