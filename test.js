@@ -1,7 +1,7 @@
-var testThing = "hi";
+let testThing = 'hi';
 
-if ( testThing == "bye" ) {
-    console.log("Broken")
+if ( testThing == 'bye' ) {
+  console.log('Broken');
 } else {
-    console.log("Howdy, partner");
+  console.log('Howdy, partner');
 }
