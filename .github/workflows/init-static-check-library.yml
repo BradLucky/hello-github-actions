@@ -21,8 +21,8 @@ jobs:
 
       - name: Print Python version
         run: |
-          echo python --version
-          echo python3 --version
+          echo "$(python --version)"
+          echo "$(python3 --version)"
 
       - name: Cache dependencies
         uses: actions/cache@v2

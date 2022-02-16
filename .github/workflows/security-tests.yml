@@ -16,8 +16,8 @@ jobs:
 
       - name: Print Python version
         run: |
-          echo python --version
-          echo python3 --version
+          echo "$(python --version)"
+          echo "$(python3 --version)"
 
       - name: Python Static Security Scan
         id: python-static-security-scan
@@ -43,8 +43,8 @@ jobs:
 
       - name: Print Python version
         run: |
-          echo python --version
-          echo python3 --version
+          echo "$(python --version)"
+          echo "$(python3 --version)"
 
       - name: Safety Check
         id: python-safety-check
