@@ -4,6 +4,7 @@ name: Run Security Scans
 jobs:
   setup:
     name: Set up Python/pip
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.9"]
