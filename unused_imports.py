@@ -5,7 +5,7 @@ from collections import Counter
 
 
 def get_now():
-    print(dattime.now())
+    print(datetime.now())
 
 
 if __name__ == "__main__":
