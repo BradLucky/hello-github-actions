@@ -17,9 +17,6 @@ jobs:
         files: |
           !.**
           **/*.js
-          **/*.jsx
-          **/*.ts
-          **/*.tsx
 
     - name: Cache dependencies
       if: steps.changed-js-files.outputs.all_changed_and_modified_files != ''

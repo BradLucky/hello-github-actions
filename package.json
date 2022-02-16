@@ -3,6 +3,7 @@
   "author": "BradLucky",
   "license": "UNLICENSED",
   "dependencies": {
+    "eslint": "^8.8.0",
     "jquery": "3.6.0"
   }
 }
