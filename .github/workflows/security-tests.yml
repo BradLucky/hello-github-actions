@@ -33,7 +33,7 @@ jobs:
       - name: Python Static Security Scan
         id: python-static-security-scan
         run: |
-          python3 ~/.local/bin/bandit *.py -lll || :
+          bandit *.py -lll || :
           rc=0
           banditoutput=$(python3 ~/.local/bin/bandit *.py -lll || rc=1) ; echo "$banditoutput" > python-bandit-results
 
@@ -74,7 +74,7 @@ jobs:
       - name: Safety Check
         id: python-safety-check
         run: |
-          python3 ~/.local/bin/safety check -r requirements.txt || :
+          safety check -r requirements.txt || :
           rc=0
           safetyoutput=$(python3 ~/.local/bin/safety check -r requirements.txt || :) ; echo "$safetyoutput" > python-safety-results
 
