@@ -33,6 +33,8 @@ jobs:
         run: |
           prRef="$(gh pr create --fill)"
           echo 'PR_REF='$prRef >> $GITHUB_ENV 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Echo Pull Request
         run: |
