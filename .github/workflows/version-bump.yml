@@ -1,25 +1,12 @@
 name: Version Bump
 
-#       version:
-#         description: "Semantic Version Number, e.g. MAJOR.MINOR.PATCH"
-#         required: true
-#
-
 on:
   workflow_dispatch:
     inputs:
       version:
         description: "Semantic Version Number, e.g. MAJOR.MINOR.PATCH"
         required: true
-        type: choice
-        options:
-        - info
-        - warning
-        - debug
-      tags:
-        description: 'Test scenario tags'
-        required: false
-        type: boolean
+        type: text
 
 jobs:
   log-the-inputs:
@@ -27,8 +14,5 @@ jobs:
     steps:
       - run: |
           echo "Version: $VERSION"
-          echo "Tags: $TAGS"
-          echo "Environment: $ENVIRONMENT"
         env:
           VERSION: ${{ github.event.inputs.version }}
-          TAGS: ${{ github.event.inputs.tags }}
