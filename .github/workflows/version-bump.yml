@@ -9,10 +9,12 @@ on:
         type: text
 
 jobs:
-  log-the-inputs:
+  bump-version:
     runs-on: ubuntu-latest
+    if: github.ref == "refs/heads/main"
+
     steps:
       - run: |
-          echo "Version: $VERSION"
+          echo "Version: v$VERSION"
         env:
           VERSION: ${{ github.event.inputs.version }}
