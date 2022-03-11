@@ -1,0 +1,56 @@
+name: Unit Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - development
+
+concurrency:
+  group: unit-test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Using Docker
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: '1'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up .env
+        run: |
+          env > .env
+
+          # - name: Cache Docker
+          #   id: cache-docker
+          #   uses: actions/cache@v2
+          #   with:
+          #     path: /tmp/docker-registry
+          #     key: docker-build-up-${{ hashFiles('Dockerfile') }}-${{ hashFiles('docker-compose.yml') }}
+
+      - name: Cache Docker
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
+      - name: Docker build & up
+        # if: steps.cache-docker.outputs.cache-hit != 'true'
+        run: /usr/bin/docker compose up -d --build
+
+        # - name: Docker up
+        #   if: steps.cache-docker.outputs.cache-hit == 'true'
+        #   run: /usr/bin/docker compose up -d
+
+      - name: Check running containers
+        run: /usr/bin/docker ps -a
+
+      - name: cat .env
+        run: /usr/bin/docker compose exec -T fleetsuite bash -c "cat .env"
+        continue-on-error: true
+
+      - name: Run tests
+        run: /usr/bin/docker compose exec -T fleetsuite pytest tests/unit/helpers/test_web.py
+        continue-on-error: true
