@@ -1,12 +1,16 @@
 name: Version Bump
 
+#       version:
+#         description: "Semantic Version Number, e.g. MAJOR.MINOR.PATCH"
+#         required: true
+#
+
 on:
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'
+      version:
+        description: "Semantic Version Number, e.g. MAJOR.MINOR.PATCH"
         required: true
-        default: 'warning'
         type: choice
         options:
         - info
@@ -26,11 +30,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "Log level: $LEVEL"
+          echo "Version: $VERSION"
           echo "Tags: $TAGS"
           echo "Environment: $ENVIRONMENT"
         env:
-          LEVEL: ${{ github.event.inputs.logLevel }}
+          VERSION: ${{ github.event.inputs.version }}
           TAGS: ${{ github.event.inputs.tags }}
           ENVIRONMENT: ${{ github.event.inputs.environment }}
 
