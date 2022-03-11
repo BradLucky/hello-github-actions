@@ -11,7 +11,7 @@ on:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: ${{ github.ref == "refs/heads/main" }}
 
     steps:
       - name: Checkout
@@ -24,26 +24,26 @@ jobs:
 
       - name: Create commits
         run: |
-          git config user.name 'Brad Luczywo'
-          git config user.email 'BradLucky@users.noreply.github.com'
+          git config user.name "Brad Luczywo"
+          git config user.email "BradLucky@users.noreply.github.com"
           git switch -c version-bump-${{ github.event.inputs.version }}
-          echo '${{ github.event.inputs.version }}' >> version.json
-          git commit -am 'Version bump ${{ github.event.inputs.version }}'
+          echo "${{ github.event.inputs.version }}" >> version.json
+          git commit -am "Version bump ${{ github.event.inputs.version }}"
           git push -u origin HEAD
 
       - name: Create Pull Request
         run: |
           prRef="$(gh pr create --fill)"
-          echo 'PR_REF='$prRef >> $GITHUB_ENV 
+          echo "PR_REF="$prRef >> $GITHUB_ENV 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Echo Pull Request
         run: |
-          echo 'PR: ${{ github.PR_REF }}'
+          echo "PR: ${{ env.PR_REF }}"
 
       - name: Merge Pull Request
         run: |
-          gh pr merge ${{ github.PR_REF }} --merge --auto --delete-branch --admin
+          gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch --admin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
