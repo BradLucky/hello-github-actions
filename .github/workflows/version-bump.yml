@@ -28,10 +28,11 @@ jobs:
           git config user.email 'BradLucky@users.noreply.github.com'
           echo '${{ github.event.inputs.version }}' >> version.json
           git commit -am 'Version bump ${{ github.event.inputs.version }}'
+          git push -u origin HEAD
 
       - name: Create Pull Request
         run: |
-          prRef="$(gh pr create --fill --head)"
+          prRef="$(gh pr create --fill)"
           echo 'PR_REF='$prRef >> $GITHUB_ENV 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
