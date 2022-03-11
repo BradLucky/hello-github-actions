@@ -40,10 +40,10 @@ jobs:
 
       - name: Echo Pull Request
         run: |
-          echo 'PR: $PR_REF'
+          echo 'PR: ${{ github.PR_REF }}'
 
       - name: Merge Pull Request
         run: |
-          gh pr merge $github.PR_REF --merge --auto --delete-branch --admin
+          gh pr merge ${{ github.PR_REF }} --merge --auto --delete-branch --admin
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
