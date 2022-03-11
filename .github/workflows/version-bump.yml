@@ -27,15 +27,27 @@ jobs:
           git config user.name 'Brad Luczywo'
           git config user.email 'BradLucky@users.noreply.github.com'
           ${{ github.events.inputs.version }} >> version.json
-          git add -A
-          git commit -m 'Version bump ${{ github.event.inputs.version }}'
+          git commit -am 'Version bump ${{ github.event.inputs.version }}'
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          add-paths: |
-            version.json
-          commit-message: 'Version bump'
-          branch: version-bump-${{ github.event.inputs.version }}
-          delete-branch: true
-          title: 'Version Bump ${{ github.event.inputs.version }}'
+        run: |
+          prRef='$(gh pr create)'
+          echo 'PR_REF='$prRef >> $GITHUB_ENV 
+
+      - name: Echo Pull Request
+        run: |
+          echo 'PR: $PR_REF'
+
+          #      - name: Create Pull Request
+          #        uses: peter-evans/create-pull-request@v3
+          #        with:
+          #          add-paths: |
+          #            version.json
+          #          commit-message: 'Version bump'
+          #          branch: version-bump-${{ github.event.inputs.version }}
+          #          delete-branch: true
+          #          title: 'Version Bump ${{ github.event.inputs.version }}'
+
+          #      - name: Merge Pull Request
+          #        run: |
+          #          gh pr merge 
