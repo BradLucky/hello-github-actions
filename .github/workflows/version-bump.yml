@@ -27,7 +27,8 @@ jobs:
           git config user.name 'Brad Luczywo'
           git config user.email 'BradLucky@users.noreply.github.com'
           ${{ github.events.inputs.version }} >> version.json
-          git commit -am 'Version bump ${{ github.event.inputs.version }}'
+          git add -A
+          git commit -m 'Version bump ${{ github.event.inputs.version }}'
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
