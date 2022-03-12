@@ -11,7 +11,7 @@ on:
 jobs:
   bump-version:
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.ref, 'refs/heads/hotfix/v' }}
+    if: ${{ startsWith(github.ref, 'refs/heads/hotfix/v') }}
 
     steps:
       - name: Checkout
