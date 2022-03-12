@@ -1,0 +1,73 @@
+name: Static Code Analysis
+on: pull_request
+
+jobs:
+  # changed-files:
+  #   name: get changed files
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     all: ${{ steps.changes.outputs.all }}
+  #     py: ${{ steps.changes.outputs.py }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+
+  #     - name: Get changed files
+  #       id: changes
+  #       run: |
+  #         echo "::set-output name=all::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | xargs)"
+  #         echo "::set-output name=py::$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep .py$ | xargs)"
+
+  python:
+    runs-on: ubuntu-latest
+    # needs: changed-files
+    # if: ${{ needs.changed-files.outputs.py }}
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Get changed files
+      id: changed-python-files
+      uses: tj-actions/changed-files@v14.6
+      with:
+        files: |
+          **/*.py
+          !.**
+          !flask_af30/client_config
+
+    - name: Output results
+      run: |
+        echo ${{ steps.changed-python-files.outputs.all_changed_and_modified_files }}
+
+    - name: Set up Python ${{ matrix.python-version }}
+      if: steps.changed-python-files.outputs.all_changed_and_modified_files != ''
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache dependencies
+      if: steps.changed-python-files.outputs.all_changed_and_modified_files != ''
+      uses: actions/cache@v2
+      with:
+        path: ${{ env.pythonLocation }}
+        key: ${{ env.pythonLocation }}-pip-
+
+    - name: Install dependencies
+      if: steps.changed-python-files.outputs.all_changed_and_modified_files != ''
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+
+    - name: Run linter
+      if: steps.changed-python-files.outputs.all_changed_and_modified_files != ''
+      run: |
+        # pylint --exit-zero --output-format=colorized ${{ needs.changed-files.outputs.py }}
+        pylint --exit-zero --output-format=colorized ${{ steps.changed-python-files.outputs.all_changed_and_modified_files }}
