@@ -44,6 +44,6 @@ jobs:
 
       - name: Merge Pull Request
         run: |
-          gh pr merge ${{ env.PR_REF }} --merge --delete-branch --admin
+          gh pr merge ${{ env.PR_REF }} --merge --delete-branch --auto
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
