@@ -48,3 +48,8 @@ jobs:
           gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete Branch
+        run: |
+          git branch -d version-bump-${{ env.NEW_VERSION }}
+          git push origin --delete version-bump-${{ env.NEW_VERSION }}
