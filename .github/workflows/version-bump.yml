@@ -26,7 +26,8 @@ jobs:
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git pull
+          echo $(git branch --show-current)
+          git pull --rebase
           git switch -c version-bump-${{ env.NEW_VERSION }}
           jq '.version = "${{ env.NEW_VERSION }}"' frontend/package.json > tmp.json && mv tmp.json frontend/package.json
           jq '.version = "${{ env.NEW_VERSION }}"' vue-frontend/package.json > tmp.json && mv tmp.json vue-frontend/package.json
