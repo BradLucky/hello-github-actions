@@ -22,7 +22,7 @@ jobs:
           echo "OLD_VERSION="$(jq '.version' frontend/package.json) >> $GITHUB_ENV
           echo "NEW_VERSION="${{ github.event.inputs.version }} >> $GITHUB_ENV
           echo "BASE="$(git branch --show-current) >> $GITHUB_ENV
-          echo "HEAD=version-bump-"${{ env.NEW_VERSION }} >> $GITHUB_ENV
+          echo "HEAD=version-bump-"${{ github.event.inputs.version }} >> $GITHUB_ENV
 
       - name: Create commits
         run: |
@@ -50,3 +50,8 @@ jobs:
           gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete branch
+        run: |
+          git branch -d ${{ env.HEAD }}
+          git push origin --delete ${{ env.HEAD }}
