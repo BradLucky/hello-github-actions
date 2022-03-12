@@ -22,23 +22,25 @@ jobs:
           echo "OLD_VERSION="$(jq '.version' frontend/package.json) >> $GITHUB_ENV
           echo "NEW_VERSION="${{ github.event.inputs.version }} >> $GITHUB_ENV
           echo "BASE="$(git branch --show-current) >> $GITHUB_ENV
+          echo "HEAD=version-bump-"${{ env.NEW_VERSION }} >> $GITHUB_ENV
 
       - name: Create commits
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
           git pull --rebase
-          git switch -c version-bump-${{ env.NEW_VERSION }}
+          git switch -c ${{ env.HEAD }}
           jq '.version = "${{ env.NEW_VERSION }}"' frontend/package.json > tmp.json && mv tmp.json frontend/package.json
           jq '.version = "${{ env.NEW_VERSION }}"' vue-frontend/package.json > tmp.json && mv tmp.json vue-frontend/package.json
           jq '.version = "${{ env.NEW_VERSION }}"' ezapp/package.json > tmp.json && mv tmp.json ezapp/package.json
           git add */package.json
           git commit -m "Version bump ${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}"
           git push -u origin HEAD
+          git switch ${{ env.BASE }}
 
       - name: Create Pull Request
         run: |
-          prRef="$(gh pr create --base ${{ env.BASE }} --fill --no-maintainer-edit)"
+          prRef="$(gh pr create --head ${{ env.HEAD }} --base ${{ env.BASE }} --fill --no-maintainer-edit)"
           echo "PR_REF="$prRef >> $GITHUB_ENV 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -48,8 +50,3 @@ jobs:
           gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete Branch
-        run: |
-          git branch -d version-bump-${{ env.NEW_VERSION }}
-          git push origin --delete version-bump-${{ env.NEW_VERSION }}
