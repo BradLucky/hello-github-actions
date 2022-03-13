@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Semantic Version Number, e.g. MAJOR.MINOR.PATCH"
+        description: "Semantic Version, e.g. MAJOR.MINOR.PATCH"
         required: true
         type: text
 
@@ -24,21 +24,25 @@ jobs:
           echo "BASE="$(git branch --show-current) >> $GITHUB_ENV
           echo "HEAD=version-bump-"${{ github.event.inputs.version }} >> $GITHUB_ENV
 
-      - name: Create commits
+      - name: Set actor
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Create branch
+        run: |
           git pull --rebase
           git switch -c ${{ env.HEAD }}
-          jq '.version = "${{ env.NEW_VERSION }}"' frontend/package.json > tmp.json && mv tmp.json frontend/package.json
-          jq '.version = "${{ env.NEW_VERSION }}"' vue-frontend/package.json > tmp.json && mv tmp.json vue-frontend/package.json
-          jq '.version = "${{ env.NEW_VERSION }}"' ezapp/package.json > tmp.json && mv tmp.json ezapp/package.json
+
+      - name: Push version update
+        run: |
+          for i in **/package.json; do jq '.version = "${{ env.NEW_VERSION }}"' $i > tmp.json && mv tmp.json $i; done
           git add */package.json
           git commit -m "Version bump ${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}"
           git push -u origin HEAD
           git switch ${{ env.BASE }}
 
-      - name: Create Pull Request
+      - name: Create pull request
         run: |
           prRef="$(gh pr create --head ${{ env.HEAD }} --base ${{ env.BASE }} --fill --no-maintainer-edit)"
           echo "PR_REF="$prRef >> $GITHUB_ENV 
@@ -46,7 +50,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Merge Pull Request
+      - name: Merge pull request
         run: |
           gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch
         env:
