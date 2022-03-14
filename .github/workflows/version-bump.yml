@@ -29,14 +29,17 @@ jobs:
           echo "${{ env.NEW_VERSION }}: ${{ env.BASE }} == hotfix/v$major.$minor.x"
           if [[ ${{ env.NEW_VERSION }} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             if ! [[ ${{ env.BASE }} =~ ^hotfix\/v$major.$minor.x$ ]]; then
-              echo "${{ env.BASE }}: Version must match the chosen hotfix branch" >&2; exit 1
+              echo "${{ env.BASE }}: Version must match the chosen hotfix branch"
+              exit 1
             fi
           elif [[ ${{ env.NEW_VERSION }} =~ ^[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
             if ! [[ ${{ env.BASE }} =~ ^test$ ]]; then
-              echo "${{ env.BASE }}: For release candidate, you must choose the test branch" >&2; exit 1
+              echo "${{ env.BASE }}: For release candidate, you must choose the test branch"
+              exit 1
             fi
           else
-            echo "${{ env.NEW_VERSION }} is not a semantic version number" >&2; exit 1
+            echo "${{ env.NEW_VERSION }} is not a semantic version number"
+            exit 1
           fi
 
       - name: Set actor
