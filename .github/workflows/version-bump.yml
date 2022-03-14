@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Semantic Version Number, e.g. MAJOR.MINOR.PATCH"
+        description: "Semantic Version, e.g. MAJOR.MINOR.PATCH"
         required: true
         type: text
 
@@ -17,33 +17,67 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Get versions
+      - name: Set env
         run: |
           echo "OLD_VERSION="$(jq '.version' frontend/package.json) >> $GITHUB_ENV
           echo "NEW_VERSION="${{ github.event.inputs.version }} >> $GITHUB_ENV
+          echo "BASE="$(git branch --show-current) >> $GITHUB_ENV
+          echo "HEAD=version-bump-"${{ github.event.inputs.version }} >> $GITHUB_ENV
 
-      - name: Create commits
+      - name: Validate version and branch
+        run: |
+          IFS=. read major minor patch <<< ${{ env.NEW_VERSION }}
+
+          if [[ ${{ env.NEW_VERSION }} =~ "^[0-9]?\.[0-9]?\.[0-9]?$" ]]; then
+            if ! [[ ${{ env.BASE }} =~ "^hotfix\/v$major.$minor.x$" ]]; then
+              echo "Version does not match this hotfix branch: ${{ env.BASE }}" >&2; exit 1
+            fi
+
+          elif [[ ${{ env.NEW_VERSION }} =~ "^[0-9]?\.[0-9]?\.[0-9]?-rc\.[0-9]?$" ]]; then
+            if ! [[ ${{ env.BASE }} =~ "^test$" ]]; then
+              echo "Release candidate version must go against the test branch" >&2; exit 1
+            fi
+
+          else
+            echo "${{ env.NEW_VERSION }} is not a semantic version number" >&2; exit 1
+          fi
+
+      - name: Set actor
         run: |
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git pull
-          git switch -c version-bump-${{ env.NEW_VERSION }}
-          jq '.version = "${{ env.NEW_VERSION }}"' frontend/package.json > tmp.json && mv tmp.json frontend/package.json
-          jq '.version = "${{ env.NEW_VERSION }}"' vue-frontend/package.json > tmp.json && mv tmp.json vue-frontend/package.json
-          jq '.version = "${{ env.NEW_VERSION }}"' ezapp/package.json > tmp.json && mv tmp.json ezapp/package.json
+
+          # - name: Create hotfix branch from test
+          #   run: |
+          #     IFS=. read major minor patch <<< ${{ env.NEW_VERSION }}
+          #     git switch test
+          #     git pull
+          #     git switch -C hotfix/v$major.$minor.x
+          #     git push -u origin HEAD
+
+      - name: Create pull request branch
+        run: |
+          git pull --rebase
+          git switch -c ${{ env.HEAD }}
+
+      - name: Push version update
+        run: |
+          for i in **/package.json; do jq '.version = "${{ env.NEW_VERSION }}"' $i > tmp.json && mv tmp.json $i; done
           git add */package.json
           git commit -m "Version bump ${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}"
           git push -u origin HEAD
+          git switch ${{ env.BASE }}
 
-      - name: Create Pull Request
+      - name: Create pull request
         run: |
-          prRef="$(gh pr create --fill)"
+          prRef="$(gh pr create --head ${{ env.HEAD }} --base ${{ env.BASE }} --fill --no-maintainer-edit)"
           echo "PR_REF="$prRef >> $GITHUB_ENV 
+          sleep 3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Merge Pull Request
+      - name: Merge pull request
         run: |
-          gh pr merge ${{ env.PR_REF }} --merge --delete-branch --auto
+          gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
