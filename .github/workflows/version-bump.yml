@@ -28,13 +28,13 @@ jobs:
         run: |
           IFS=. read major minor patch <<< ${{ env.NEW_VERSION }}
 
-          if [[ ${{ env.NEW_VERSION }} =~ "^[0-9]?\.[0-9]?\.[0-9]?$" ]]; then
-            if ! [[ ${{ env.BASE }} =~ "^hotfix\/v$major.$minor.x$" ]]; then
+          if [[ "${{ env.NEW_VERSION }}" =~ "^[0-9]?\.[0-9]?\.[0-9]?$" ]]; then
+            if ! [[ "${{ env.BASE }}" =~ "^hotfix\/v$major.$minor.x$" ]]; then
               echo "Version does not match this hotfix branch: ${{ env.BASE }}" >&2; exit 1
             fi
 
-          elif [[ ${{ env.NEW_VERSION }} =~ "^[0-9]?\.[0-9]?\.[0-9]?-rc\.[0-9]?$" ]]; then
-            if ! [[ ${{ env.BASE }} =~ "^test$" ]]; then
+          elif [[ "${{ env.NEW_VERSION }}" =~ "^[0-9]?\.[0-9]?\.[0-9]?-rc\.[0-9]?$" ]]; then
+            if ! [[ "${{ env.BASE }}" =~ "^test$" ]]; then
               echo "Release candidate version must go against the test branch" >&2; exit 1
             fi
 
