@@ -35,6 +35,7 @@ jobs:
           git switch test
           git pull
           git switch -C hotfix/v$major.$minor.x
+          git push -u origin HEAD
 
       - name: Create pull request branch
         run: |
