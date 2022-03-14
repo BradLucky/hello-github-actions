@@ -27,7 +27,6 @@ jobs:
       - name: Validate version and branch
         run: |
           IFS=. read major minor patch <<< ${{ env.NEW_VERSION }}
-
           echo "${{ env.NEW_VERSION }}, ${{ env.BASE }} = hotfix/v$major.$minor.x"
 
       - name: Set actor
