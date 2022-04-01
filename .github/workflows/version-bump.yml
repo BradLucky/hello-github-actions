@@ -77,4 +77,7 @@ jobs:
         run: |
           echo $(git branch --show-current)
           echo $(git status)
-          echo $(jq '.version' frontend/package.json)
+          echo "${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}"
+          echo "Before pull, version in package.json: $(jq '.version' frontend/package.json)"
+          git pull --rebase
+          echo "After pull, version in package.json: $(jq '.version' frontend/package.json)"
