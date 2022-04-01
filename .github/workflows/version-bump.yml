@@ -76,7 +76,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Print details
-        if: ${{ env.CAN_RELEASE == 'false' }}
+        if: ${{ env.CAN_RELEASE == 'true' }}
         run: |
           echo $(git branch --show-current)
           echo $(git status)
