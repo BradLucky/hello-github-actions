@@ -72,3 +72,9 @@ jobs:
           gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Print details
+        run: |
+          echo $(git branch --show-current)
+          echo $(git status)
+          echo $(jq '.version' frontend/package.json)
