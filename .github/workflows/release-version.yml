@@ -1,0 +1,21 @@
+name: Release Version
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set env
+        run: |
+          echo "OLD_VERSION="$(cat .version) >> $GITHUB_ENV
+          echo "NEW_VERSION="$(git describe --tags `git rev-list --tags --max-count=1`) >> $GITHUB_ENV
+          echo "BASE="$(git branch --show-current) >> $GITHUB_ENV
+          # echo "HEAD=version-bump-"${{ github.event.inputs.version }} >> $GITHUB_ENV
+
