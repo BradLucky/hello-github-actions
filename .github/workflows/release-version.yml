@@ -19,3 +19,8 @@ jobs:
           echo "BASE="$(git branch --show-current) >> $GITHUB_ENV
           # echo "HEAD=version-bump-"${{ github.event.inputs.version }} >> $GITHUB_ENV
 
+      - name: Print env
+        run: |
+          echo ${{ env.OLD_VERSION }}
+          echo ${{ env.NEW_VERSION }}
+          echo ${{ env.BASE }}
