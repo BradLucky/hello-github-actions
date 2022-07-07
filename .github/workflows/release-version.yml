@@ -16,11 +16,18 @@ jobs:
         run: |
           echo "OLD_VERSION="$(cat .version) >> $GITHUB_ENV
           echo "NEW_VERSION="$(git describe --tags `git rev-list --tags --max-count=1`) >> $GITHUB_ENV
-          echo "BASE="$(git branch --show-current) >> $GITHUB_ENV
           # echo "HEAD=version-bump-"${{ github.event.inputs.version }} >> $GITHUB_ENV
 
       - name: Print env
         run: |
           echo ${{ env.OLD_VERSION }}
           echo ${{ env.NEW_VERSION }}
-          echo ${{ env.BASE }}
+
+      - name: Update version
+        run: |
+          echo ${{ env.NEW_VERSION }} > .version
+
+      - name: Name version
+        run: |
+          echo "Version created"
+
