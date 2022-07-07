@@ -2,3 +2,6 @@ ownership_rules:
   directory_matching_rules:
     - name: package.json files
       path: "**/package.json"
+
+    - name: version file
+      path: ".version"

@@ -16,18 +16,42 @@ jobs:
         run: |
           echo "OLD_VERSION="$(cat .version) >> $GITHUB_ENV
           echo "NEW_VERSION="$(git describe --tags `git rev-list --tags --max-count=1`) >> $GITHUB_ENV
-          # echo "HEAD=version-bump-"${{ github.event.inputs.version }} >> $GITHUB_ENV
+          echo "BASE="$(git branch --show-current) >> $GITHUB_ENV
+          echo "HEAD=version-bump-"$(git describe --tags `git rev-list --tags --max-count=1`) >> $GITHUB_ENV
 
       - name: Print env
         run: |
           echo ${{ env.OLD_VERSION }}
           echo ${{ env.NEW_VERSION }}
 
-      - name: Update version
+      - name: Create pull request branch
+        run: |
+          git pull --rebase
+          git switch -c ${{ env.HEAD }}
+
+      - name: Push version update
         run: |
           echo ${{ env.NEW_VERSION }} > .version
+          git add .version
+          git commit -m "Version bump ${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}"
+          git push -u origin HEAD
+          git switch ${{ env.BASE }}
+
+      - name: Create pull request
+        run: |
+          prRef="$(gh pr create --head ${{ env.HEAD }} --base ${{ env.BASE }} --fill --no-maintainer-edit)"
+          echo "PR_REF="$prRef >> $GITHUB_ENV
+          sleep 3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge pull request
+        run: |
+          gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Name version
         run: |
-          echo "Version created"
+          echo "Version bump ${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}"
 
