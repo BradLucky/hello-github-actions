@@ -56,13 +56,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create PR to merge back to Development
+      - name: Create PR to merge back to Main
         run: |
           git switch ${{ env.BASE }}
           git pull --rebase
-          git switch development
+          git switch main
           git pull --rebase
           git switch -c ${{ env.MERGE }}
           git merge ${{ env.BASE }} --commit
           git push --set-upstream origin ${{ env.MERGE }}
-          gh pr create --head ${{ env.MERGE }} --base development --title "Merge ${{ env.NEW_VERSION }} -> development" --fill
+          gh pr create --head ${{ env.MERGE }} --base main --title "Merge ${{ env.NEW_VERSION }} -> main" --fill
