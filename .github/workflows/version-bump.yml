@@ -66,3 +66,5 @@ jobs:
           git merge ${{ env.BASE }} --commit
           git push --set-upstream origin ${{ env.MERGE }}
           gh pr create --head ${{ env.MERGE }} --base main --title "Merge ${{ env.NEW_VERSION }} -> main" --fill
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
