@@ -11,6 +11,8 @@ on:
 jobs:
   bump-version:
     runs-on: ubuntu-22.04
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout
@@ -47,22 +49,17 @@ jobs:
           prRef="$(gh pr create --head ${{ env.HEAD }} --base ${{ env.BASE }} --title "Version bump ${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}" --fill --no-maintainer-edit)"
           echo "PR_REF="$prRef >> $GITHUB_ENV
           sleep 3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge pull request
         run: |
           gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create PR to merge back to Main
+      - name: Create PR to merge back to Development
         run: |
-          git switch ${{ env.BASE }}
-          git pull --rebase
-          git switch main
+          git fetch --unshallow
+          git switch development
           git pull --rebase
           git switch -c ${{ env.MERGE }}
-          git merge ${{ env.BASE }} --commit
+          git merge --no-ff ${{ env.BASE }} --commit -m "Merge ${{ env.NEW_VERSION }} -> development"
           git push --set-upstream origin ${{ env.MERGE }}
-          gh pr create --head ${{ env.MERGE }} --base main --title "Merge ${{ env.NEW_VERSION }} -> main" --fill
+          gh pr create --head ${{ env.MERGE }} --base development --title "Merge ${{ env.NEW_VERSION }} -> development" --fill
