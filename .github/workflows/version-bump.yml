@@ -33,7 +33,6 @@ jobs:
 
       - name: Create pull request branch
         run: |
-          git pull --rebase
           git switch -c ${{ env.HEAD }}
 
       - name: Push version update
@@ -56,14 +55,12 @@ jobs:
 
       - name: Create release
         run: |
-          git pull --rebase
           gh release create "${{ github.event.inputs.version }}" --target ${{ env.BASE }} --title "${{ github.event.inputs.version }}" --generate-notes --prerelease
 
       - name: Create PR to merge back to Development
         run: |
           git fetch --unshallow
           git switch development
-          git pull --rebase
           git switch -c ${{ env.MERGE }}
           git merge --no-ff ${{ env.BASE }} --commit -m "build: merge ${{ env.NEW_VERSION }} -> development"
           git push --set-upstream origin ${{ env.MERGE }}
