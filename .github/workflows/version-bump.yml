@@ -52,7 +52,12 @@ jobs:
 
       - name: Merge pull request
         run: |
-          gh pr merge ${{ env.PR_REF }} --merge --auto --delete-branch
+          gh pr merge ${{ env.PR_REF }} --squash --auto --delete-branch
+
+      - name: Create release
+        run: |
+          git pull --rebase
+          gh release create "${{ github.event.inputs.version }}" --target ${{ env.BASE }} --title "${{ github.event.inputs.version }}" --notes "Create automatically from version bump"
 
       - name: Create PR to merge back to Development
         run: |
@@ -60,6 +65,6 @@ jobs:
           git switch development
           git pull --rebase
           git switch -c ${{ env.MERGE }}
-          git merge --no-ff ${{ env.BASE }} --commit -m "Merge ${{ env.NEW_VERSION }} -> development"
+          git merge --no-ff ${{ env.BASE }} --commit -m "build: merge ${{ env.NEW_VERSION }} -> development"
           git push --set-upstream origin ${{ env.MERGE }}
-          gh pr create --head ${{ env.MERGE }} --base development --title "Merge ${{ env.NEW_VERSION }} -> development" --fill
+          gh pr create --head ${{ env.MERGE }} --base development --title "build: merge ${{ env.NEW_VERSION }} -> development" --fill
