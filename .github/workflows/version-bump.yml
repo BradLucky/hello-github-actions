@@ -57,7 +57,7 @@ jobs:
       - name: Create release
         run: |
           git pull --rebase
-          gh release create "${{ github.event.inputs.version }}" --target ${{ env.BASE }} --title "${{ github.event.inputs.version }}" --generate-notes
+          gh release create "${{ github.event.inputs.version }}" --target ${{ env.BASE }} --title "${{ github.event.inputs.version }}" --generate-notes --prerelease
 
       - name: Create PR to merge back to Development
         run: |
